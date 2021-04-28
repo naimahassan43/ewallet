@@ -69,6 +69,9 @@ function addItems(type, desc, value) {
     collection.insertAdjacentHTML('afterbegin', newHtml);
 
     addItemsToLS(desc, time, type, value);
+
+    showTotalIncome();
+    showTotalExpense();
 }
 
 function resetForm() {
@@ -97,6 +100,39 @@ function addItemsToLS(desc, time, type, value) {
     items.push({ desc, time, type, value });
 
     localStorage.setItem('items', JSON.stringify(items));
+}
+//*****************************//
+//Calculate Total Income & Expense
+//*****************************//
+
+showTotalIncome();
+
+function showTotalIncome() {
+    let items = getItemsFromLS();
+
+    let totalIncome = 0;
+    for (let item of items) {
+        if (item.type === '+') {
+            totalIncome += parseInt(item.value);
+        }
+    }
+
+    document.querySelector('.income__amount p').innerText = `$${totalIncome}`;
+}
+
+showTotalExpense();
+
+function showTotalExpense() {
+    let items = getItemsFromLS();
+
+    let totalExpenses = 0;
+    for (let item of items) {
+        if (item.type === '-') {
+            totalExpenses += parseInt(item.value);
+        }
+    }
+
+    document.querySelector('.expense__amount p').innerText = `$${totalExpenses}`
 }
 
 //*****************************//
