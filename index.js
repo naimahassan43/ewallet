@@ -37,7 +37,7 @@ function showItems() {
               </div>
             </div>
             <div class="item-amount ${item.type === '+' ? 'income-amount' : 'expense-amount'}">
-              <p>${item.type}$${item.value}</p>
+              <p>${item.type}$${sep(item.value)}</p>
             </div>
           </div>
           `;
@@ -60,7 +60,7 @@ function addItems(type, desc, value) {
                       </div>
                     </div>
                     <div class="item-amount ${type === '+' ? 'income-amount':'expense-amount'}">
-                      <p>${type}$${value}</p>
+                      <p>${type}$${sep(value)}</p>
                     </div>
                   </div>
                   `
@@ -85,13 +85,7 @@ function resetForm() {
 /********************************/
 function getItemsFromLS() {
     let items = localStorage.getItem('items');
-
-    if (items) {
-        items = JSON.parse(items);
-    } else {
-        items = [];
-    }
-    return items;
+    return (items) ? JSON.parse(items) : [];
 }
 
 function addItemsToLS(desc, time, type, value) {
@@ -111,14 +105,17 @@ showTotalIncome();
 function showTotalIncome() {
     let items = getItemsFromLS();
 
-    let totalIncome = 0;
-    for (let item of items) {
-        if (item.type === '+') {
-            totalIncome += parseInt(item.value);
-        }
-    }
+    // let totalIncome = 0;
+    // for (let item of items) {
+    //     if (item.type === '+') {
+    //         totalIncome += parseInt(item.value);
+    //     }
+    // }
+    let totalIncome = items
+        .filter((item) => item.type === '+')
+        .reduce((income, item) => income + parseInt(item.value), 0);
 
-    document.querySelector('.income__amount p').innerText = `$${totalIncome}`;
+    document.querySelector('.income__amount p').innerText = `$${sep(totalIncome)}`;
 }
 
 showTotalExpense();
@@ -126,14 +123,18 @@ showTotalExpense();
 function showTotalExpense() {
     let items = getItemsFromLS();
 
-    let totalExpenses = 0;
-    for (let item of items) {
-        if (item.type === '-') {
-            totalExpenses += parseInt(item.value);
-        }
-    }
+    // let totalExpenses = 0;
+    // for (let item of items) {
+    //     if (item.type === '-') {
+    //         totalExpenses += parseInt(item.value);
+    //     }
+    // }
 
-    document.querySelector('.expense__amount p').innerText = `$${totalExpenses}`
+    let totalExpenses = items
+        .filter((item) => item.type === '-')
+        .reduce((expense, item) => expense - parseInt(item.value), 0);
+
+    document.querySelector('.expense__amount p').innerText = `$${sep(totalExpenses)}`
 }
 
 showTotalBalance();
@@ -150,14 +151,9 @@ function showTotalBalance() {
         }
     }
 
-    document.querySelector('.balance__amount p').innerText = `$${balance}`;
+    document.querySelector('.balance__amount p').innerText = sep(balance);
 
     document.querySelector('header').className = (balance >= 0) ? 'green' : 'red';
-    // if (balance >= 0) {
-    //     document.querySelector('header').className = 'green';
-    // } else {
-    //     document.querySelector('header').className = 'red';
-    // }
 }
 //*****************************//
 //   Utitlity function
@@ -173,4 +169,9 @@ function getFormattedTime() {
     const time = now.split(',')[1];
     return `${date[1]} ${date[0]},${time}`;
 
+}
+
+function sep(amount) {
+    amount = parseInt(amount);
+    return amount.toLocaleString();
 }
