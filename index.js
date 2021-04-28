@@ -132,7 +132,7 @@ function showTotalExpense() {
 
     let totalExpenses = items
         .filter((item) => item.type === '-')
-        .reduce((expense, item) => expense - parseInt(item.value), 0);
+        .reduce((expense, item) => expense + parseInt(item.value), 0);
 
     document.querySelector('.expense__amount p').innerText = `$${sep(totalExpenses)}`
 }
