@@ -31,10 +31,11 @@ function addItems(type, desc, value) {
                     </div>
                   </div>
                   `
-    console.log(newHtml);
 
     const collection = document.querySelector('.collection');
     collection.insertAdjacentHTML('afterbegin', newHtml);
+
+    addItemsToLS(desc, time, type, value);
 }
 
 function resetForm() {
@@ -42,8 +43,32 @@ function resetForm() {
     document.querySelector('.add__description').value = '';
     document.querySelector('.add__value').value = '';
 }
+//*********************************//
+//   Store data into local storage
+//*********************************//
+function getItemsFromLS() {
+    let items = localStorage.getItem('items');
 
-//Utitlity function
+    if (items) {
+        items = JSON.parse(items);
+    } else {
+        items = [];
+    }
+    return items;
+}
+
+function addItemsToLS(desc, time, type, value) {
+
+    let items = getItemsFromLS();
+
+    items.push({ desc, time, type, value });
+
+    localStorage.setItem('items', JSON.stringify(items));
+}
+
+//*****************************//
+//   Utitlity function
+//*****************************//
 function getFormattedTime() {
     const now = new Date().toLocaleTimeString('en-us', {
         day: 'numeric',
@@ -53,7 +78,7 @@ function getFormattedTime() {
     });
     const date = now.split(',')[0].split(' ');
     const time = now.split(',')[1];
-    const formattedTime = `${date[1]} ${date[0]},${time}`;
+    return `${date[1]} ${date[0]},${time}`;
 
-    return formattedTime;
+
 }
