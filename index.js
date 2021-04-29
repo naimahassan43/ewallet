@@ -151,7 +151,7 @@ function showTotalBalance() {
         }
     }
 
-    document.querySelector('.balance__amount p').innerText = sep(balance);
+    document.querySelector('.balance__amount p').innerText = `${sep(balance)}`;
 
     document.querySelector('header').className = (balance >= 0) ? 'green' : 'red';
 }
